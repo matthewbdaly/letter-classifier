@@ -11,6 +11,11 @@
     "require-dev": {
         "phpspec/phpspec": "^4.3"
     },
+    "autoload": {
+        "psr-4": {
+            "Matthewbdaly\\LetterClassifier\\": "src/"
+        }
+    },
     "license": "MIT",
     "authors": [
         {
