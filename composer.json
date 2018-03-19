@@ -1,0 +1,20 @@
+{
+    "name": "matthewbdaly/letter-classifier",
+    "description": "Demo of classifying letters in PHP",
+    "type": "project",
+    "require": {
+        "league/pipeline": "^0.3.0",
+        "thiagoalessio/tesseract_ocr": "^2.2",
+        "php-ai/php-ml": "^0.6.2"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^4.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Daly",
+            "email": "matthewbdaly@gmail.com"
+        }
+    ]
+}
