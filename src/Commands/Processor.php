@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use League\Pipeline\Pipeline;
+use Matthewbdaly\LetterClassifier\Stages\ConvertPdfToPng;
 
 class Processor extends Command
 {
@@ -21,6 +22,9 @@ class Processor extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = $input->getArgument('file');
+        $pipeline = (new Pipeline)
+            ->pipe(new ConvertPdfToPng);
+        $pipeline->process($file);
     }
 }
 
