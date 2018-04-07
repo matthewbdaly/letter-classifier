@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use League\Pipeline\Pipeline;
 use Matthewbdaly\LetterClassifier\Stages\ConvertPdfToPng;
 use Matthewbdaly\LetterClassifier\Stages\ReadFile;
+use Matthewbdaly\LetterClassifier\Stages\Classify;
 
 class Processor extends Command
 {
@@ -25,7 +26,8 @@ class Processor extends Command
         $file = $input->getArgument('file');
         $pipeline = (new Pipeline)
             ->pipe(new ConvertPdfToPng)
-            ->pipe(new ReadFile);
+            ->pipe(new ReadFile)
+            ->pipe(new Classify);
         $pipeline->process($file);
     }
 }
