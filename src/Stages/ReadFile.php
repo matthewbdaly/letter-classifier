@@ -11,7 +11,6 @@ class ReadFile
     {
         $uri = stream_get_meta_data($file)['uri'];
         $ocr = new TesseractOCR($uri);
-        $output = $ocr->lang('eng')->run();
-        eval(\Psy\Sh());
+        return $ocr->lang('eng')->run();
     }
 }
