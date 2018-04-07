@@ -2,7 +2,7 @@
 
 namespace Matthewbdaly\LetterClassifier\Stages;
 
-use Phpml\Classification\KNearestNeighbors;
+use Phpml\Classification\NaiveBayes;
 use Phpml\ModelManager;
 
 class Classify
@@ -17,12 +17,12 @@ class Classify
         if (file_exists('model.txt')) {
             $this->classifier = $this->manager->restoreFromFile('model.txt');
         } else {
-            $this->classifier = new KNearestNeighbors;
+            $this->classifier = new NaiveBayes;
         }
     }
 
     public function __invoke(string $text)
     {
-        $this->classifier->predict([$text]);
+        return $this->classifier->predict([$text]);
     }
 }

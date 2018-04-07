@@ -2,7 +2,7 @@
 
 namespace Matthewbdaly\LetterClassifier\Stages;
 
-use Phpml\Classification\KNearestNeighbors;
+use Phpml\Classification\NaiveBayes;
 use Phpml\ModelManager;
 
 class Train
@@ -20,13 +20,13 @@ class Train
         if (file_exists('model.txt')) {
             $this->classifier = $this->manager->restoreFromFile('model.txt');
         } else {
-            $this->classifier = new KNearestNeighbors;
+            $this->classifier = new NaiveBayes;
         }
     }
 
     public function __invoke(string $text)
     {
-        $this->classifier->train([$text], [$this->category]);
+        $this->classifier->train([[$text]], [$this->category]);
         $this->manager->saveToFile($this->classifier, 'model.txt');
     }
 }

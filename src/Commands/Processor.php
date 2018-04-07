@@ -28,7 +28,8 @@ class Processor extends Command
             ->pipe(new ConvertPdfToPng)
             ->pipe(new ReadFile)
             ->pipe(new Classify);
-        $pipeline->process($file);
+        $response = $pipeline->process($file);
+        $output->writeln("Classification is $response");
     }
 }
 
