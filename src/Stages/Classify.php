@@ -2,7 +2,6 @@
 
 namespace Matthewbdaly\LetterClassifier\Stages;
 
-use Phpml\ModelManager;
 use Phpml\Dataset\CsvDataset;
 use Phpml\Dataset\ArrayDataset;
 use Phpml\FeatureExtraction\TokenCountVectorizer;
@@ -21,33 +20,25 @@ class Classify
 
     public function __construct()
     {
-        $this->manager = new ModelManager;
-        if (file_exists('model.txt')) {
-            $this->classifier = $this->manager->restoreFromFile('model.txt');
-        } else {
-            $this->classifier = new NaiveBayes;
+        $this->dataset = new CsvDataset('data/letters.csv', 1);
+        $this->vectorizer = new TokenCountVectorizer(new WordTokenizer());
+        $this->tfIdfTransformer = new TfIdfTransformer();
+        $samples = [];
+        foreach ($this->dataset->getSamples() as $sample) {
+                $samples[] = $sample[0];
         }
+        $this->vectorizer->fit($samples);
+        $this->vectorizer->transform($samples);
+        $this->tfIdfTransformer->fit($samples);
+        $this->tfIdfTransformer->transform($samples);
+        $dataset = new ArrayDataset($samples, $this->dataset->getTargets());
+        $randomSplit = new StratifiedRandomSplit($dataset, 0.1);
+        $this->classifier = new SVC(Kernel::RBF, 10000);
+        $this->classifier->train($randomSplit->getTrainSamples(), $randomSplit->getTrainLabels());
     }
 
     public function __invoke(string $text)
     {
         return $this->classifier->predict([$text]);
-        $dataset = new CsvDataset('data/languages.csv', 1);
-        $vectorizer = new TokenCountVectorizer(new WordTokenizer());
-        $tfIdfTransformer = new TfIdfTransformer();
-        $samples = [];
-        foreach ($dataset->getSamples() as $sample) {
-                $samples[] = $sample[0];
-        }
-        $vectorizer->fit($samples);
-        $vectorizer->transform($samples);
-        $tfIdfTransformer->fit($samples);
-        $tfIdfTransformer->transform($samples);
-        $dataset = new ArrayDataset($samples, $dataset->getTargets());
-        $randomSplit = new StratifiedRandomSplit($dataset, 0.1);
-        $classifier = new SVC(Kernel::RBF, 10000);
-        $classifier->train($randomSplit->getTrainSamples(), $randomSplit->getTrainLabels());
-        $predictedLabels = $classifier->predict($randomSplit->getTestSamples());
-        echo 'Accuracy: '.Accuracy::score($randomSplit->getTestLabels(), $predictedLabels);
     }
 }
