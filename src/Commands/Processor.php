@@ -10,6 +10,7 @@ use League\Pipeline\Pipeline;
 use Matthewbdaly\LetterClassifier\Stages\ConvertPdfToPng;
 use Matthewbdaly\LetterClassifier\Stages\ReadFile;
 use Matthewbdaly\LetterClassifier\Stages\Classify;
+use Matthewbdaly\LetterClassifier\Stages\StripTabs;
 
 class Processor extends Command
 {
@@ -27,6 +28,7 @@ class Processor extends Command
         $pipeline = (new Pipeline)
             ->pipe(new ConvertPdfToPng)
             ->pipe(new ReadFile)
+            ->pipe(new StripTabs)
             ->pipe(new Classify);
         $response = $pipeline->process($file);
         $output->writeln("Classification is $response");

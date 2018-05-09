@@ -39,6 +39,7 @@ class Classify
 
     public function __invoke(string $text)
     {
+        eval(\Psy\Sh());
         return $this->classifier->predict([$text]);
     }
 }
