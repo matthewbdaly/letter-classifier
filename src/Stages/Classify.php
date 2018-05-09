@@ -35,11 +35,15 @@ class Classify
         $randomSplit = new StratifiedRandomSplit($dataset, 0.1);
         $this->classifier = new SVC(Kernel::RBF, 10000);
         $this->classifier->train($randomSplit->getTrainSamples(), $randomSplit->getTrainLabels());
+        $predictedLabels = $this->classifier->predict($randomSplit->getTestSamples());
+        echo 'Accuracy: '.Accuracy::score($randomSplit->getTestLabels(), $predictedLabels);
     }
 
     public function __invoke(string $text)
     {
-        eval(\Psy\Sh());
-        return $this->classifier->predict([$text]);
+        $newSample= [$text];
+        $this->vectorizer->transform($newSample);
+        $this->tfIdfTransformer->transform($newSample);
+        return $this->classifier->predict($newSample)[0];
     }
 }
