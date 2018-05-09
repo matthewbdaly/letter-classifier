@@ -39,11 +39,12 @@ class Classify
         echo 'Accuracy: '.Accuracy::score($randomSplit->getTestLabels(), $predictedLabels);
     }
 
-    public function __invoke(string $text)
+    public function __invoke(array $message)
     {
-        $newSample = [$text];
+        $newSample = [$message['content']];
         $this->vectorizer->transform($newSample);
         $this->tfIdfTransformer->transform($newSample);
-        return $this->classifier->predict($newSample)[0];
+        $message['classification'] = $this->classifier->predict($newSample)[0];
+        return $message;
     }
 }

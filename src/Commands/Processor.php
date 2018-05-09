@@ -11,6 +11,7 @@ use Matthewbdaly\LetterClassifier\Stages\ConvertPdfToPng;
 use Matthewbdaly\LetterClassifier\Stages\ReadFile;
 use Matthewbdaly\LetterClassifier\Stages\Classify;
 use Matthewbdaly\LetterClassifier\Stages\StripTabs;
+use Matthewbdaly\LetterClassifier\Stages\GetPolicyNumber;
 
 class Processor extends Command
 {
@@ -29,9 +30,11 @@ class Processor extends Command
             ->pipe(new ConvertPdfToPng)
             ->pipe(new ReadFile)
             ->pipe(new StripTabs)
+            ->pipe(new GetPolicyNumber)
             ->pipe(new Classify);
         $response = $pipeline->process($file);
-        $output->writeln("Classification is $response");
+        $output->writeln("Classification is ".$response['classification']);
+        $output->writeln("Policy number is ".$response['policy']);
     }
 }
 
