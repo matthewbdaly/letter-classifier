@@ -41,7 +41,7 @@ class Classify
 
     public function __invoke(string $text)
     {
-        $newSample= [$text];
+        $newSample = [$text];
         $this->vectorizer->transform($newSample);
         $this->tfIdfTransformer->transform($newSample);
         return $this->classifier->predict($newSample)[0];
