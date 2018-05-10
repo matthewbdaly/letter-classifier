@@ -16,7 +16,9 @@ class Classify
 {
     protected $classifier;
 
-    protected $manager;
+    protected $vectorizer;
+
+    protected $tfIdfTransformer;
 
     public function __construct()
     {
