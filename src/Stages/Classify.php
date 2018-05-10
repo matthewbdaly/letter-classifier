@@ -11,6 +11,7 @@ use Phpml\FeatureExtraction\TfIdfTransformer;
 use Phpml\Metric\Accuracy;
 use Phpml\Classification\SVC;
 use Phpml\SupportVectorMachine\Kernel;
+use Phpml\ModelManager;
 
 class Classify
 {
@@ -20,8 +21,11 @@ class Classify
 
     protected $tfIdfTransformer;
 
+    protected $manager;
+
     public function __construct()
     {
+        $this->manager = new ModelManager;
         $this->dataset = new CsvDataset('data/letters.csv', 1);
         $this->vectorizer = new TokenCountVectorizer(new WordTokenizer());
         $this->tfIdfTransformer = new TfIdfTransformer();
@@ -35,10 +39,14 @@ class Classify
         $this->tfIdfTransformer->transform($samples);
         $dataset = new ArrayDataset($samples, $this->dataset->getTargets());
         $randomSplit = new StratifiedRandomSplit($dataset, 0.1);
-        $this->classifier = new SVC(Kernel::RBF, 10000);
-        $this->classifier->train($randomSplit->getTrainSamples(), $randomSplit->getTrainLabels());
-        $predictedLabels = $this->classifier->predict($randomSplit->getTestSamples());
-        echo 'Accuracy: '.Accuracy::score($randomSplit->getTestLabels(), $predictedLabels);
+        if (file_exists('model.txt')) {
+            $this->classifier = $this->manager->restoreFromFile('model.txt');
+        } else {
+            $this->classifier = new SVC(Kernel::RBF, 10000);
+            $this->classifier->train($randomSplit->getTrainSamples(), $randomSplit->getTrainLabels());
+            $predictedLabels = $this->classifier->predict($randomSplit->getTestSamples());
+            echo 'Accuracy: '.Accuracy::score($randomSplit->getTestLabels(), $predictedLabels);
+        }
     }
 
     public function __invoke(array $message)
